@@ -1,5 +1,5 @@
 
-## 1. Server Access with Username and Password
+# 1. Server Access with Username and Password
 ### Edit SSH Configuration File: Open the sshd_config file:
 ```bash
 sudo vim /etc/ssh/sshd_config
