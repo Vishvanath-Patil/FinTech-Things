@@ -258,3 +258,15 @@ By following these steps, users can securely access the server using their priva
 - Check if the correct user is logging in by verifying that the username matches the one set up for key-based authentication.
 
 That's it! Now, the new user should be able to log into the server using key-based authentication from PuTTY.
+# Give a User Sudo Access 
+- Edit vim sudoers
+## 1. With password:
+```bash
+username ALL=(ALL) ALL
+%groupname ALL=(ALL) ALL
+```
+## 2. Without password:
+```bash
+username ALL=(ALL) NOPASSWD: ALL
+%groupname ALL=(ALL) NOPASSWD: ALL
+```
