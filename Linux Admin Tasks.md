@@ -259,10 +259,10 @@ By following these steps, users can securely access the server using their priva
 
 That's it! Now, the new user should be able to log into the server using key-based authentication from PuTTY.
 # Give a User Sudo Access 
-- Edit vim sudoers
+- Edit `vim sudoers`
 ## 1. With password:
 ```bash
-username ALL=(ALL) ALL
+username ALL=(ALL) ALL   
 %groupname ALL=(ALL) ALL
 ```
 ## 2. Without password:
