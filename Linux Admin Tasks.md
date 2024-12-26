@@ -1,5 +1,5 @@
 
-## 1. Using SSH with Username and Password
+## 1. Server Access with Username and Password
 ### Edit SSH Configuration File: Open the sshd_config file:
 ```bash
 sudo vim /etc/ssh/sshd_config
@@ -153,3 +153,108 @@ PermitRootLogin no
 
 By following these steps, users can securely access the server using their private keys, without relying on passwords.
 
+---
+
+# 3. Key-Based Authentication with PuTTY on Windows (Including User Creation)
+
+## Step 1: Generate SSH Key Pair
+1. **Download and Install PuTTY** if you haven't already from the [official website](https://www.putty.org/).
+
+2. **Open PuTTYgen** (comes with PuTTY) to generate the SSH key pair:
+   - Open `PuTTYgen` (you can find it in the Start menu or the folder where PuTTY is installed).
+   - Select the key type as `RSA` or `ED25519` (RSA is commonly used).
+   - Set the desired number of bits for the key. For RSA, 2048 bits is typical.
+   - Click **Generate**.
+   - Move your mouse around the blank area to help generate entropy for the key.
+   - After the key is generated, **save the private key** (e.g., `private_key.ppk`).
+   - Optionally, set a passphrase for the key for extra security.
+   - Copy the **public key** from the "Public key for pasting into OpenSSH authorized_keys file" box (you'll need this later).
+
+## Step 2: Create the User on the Server
+1. **Log in to the server** with a user that has administrative privileges (root or a sudo-enabled user).
+
+2. **Create the new user**:
+   - Run the following command to create a new user (replace `username` with the desired username):
+     ```bash
+     sudo adduser username
+	   useradd -G <groupname> <username>
+     ```
+   - Follow the prompts to set the password and other user information (you can skip some of the fields by pressing Enter).
+
+3. **Add the user to the sudo group** (if the user should have sudo privileges):
+   - Run:
+     ```bash
+     sudo usermod -aG <groupname> <username>
+	 gpasswd -a <username> wheel
+	 groupadd <groupname>   # for creating any costom group
+     ```
+
+## Step 3: Configure the Server to Accept the Public Key
+1. **Log in as the new user** (or switch to the new user using `su - username`).
+
+2. **Create an SSH directory for the new user**:
+   - Run:
+     ```bash
+     mkdir -p ~/.ssh
+     ```
+
+3. **Set the correct permissions for the `.ssh` directory**:
+   - Run:
+     ```bash
+     chmod 700 ~/.ssh
+     ```
+
+4. **Edit the `authorized_keys` file**:
+   - Run:
+     ```bash
+     nano ~/.ssh/authorized_keys
+     ```
+   - Paste the **public key** you copied from PuTTYgen into this file.
+   - Save and exit the editor (Ctrl + X, then Y to confirm, and Enter to save).
+
+5. **Set the correct permissions for the `authorized_keys` file**:
+   - Run:
+     ```bash
+     chmod 600 ~/.ssh/authorized_keys
+     ```
+
+## Step 4: Configure SSH to Allow Key-Based Authentication (If Not Already Configured)
+1. **Edit the SSH configuration file**:
+   - Run:
+     ```bash
+     sudo nano /etc/ssh/sshd_config
+     ```
+
+2. Ensure the following settings are configured:
+   - `PubkeyAuthentication yes`
+   - `AuthorizedKeysFile .ssh/authorized_keys`
+   - **Optional**: To disable password authentication entirely (for increased security), set:
+     - `PasswordAuthentication no`
+
+3. **Restart the SSH service** to apply changes:
+   ```bash
+   sudo systemctl restart ssh
+   ```
+
+## Step 5: Configure PuTTY to Use the Private Key
+1. **Open PuTTY**.
+
+2. In the **Host Name (or IP address)** field, enter the server’s IP address.
+
+3. In the **Connection > SSH > Auth** section, browse and select the **private key file** you saved earlier (`private_key.ppk`).
+
+4. **Save this session** by going back to the "Session" category, entering a name under "Saved Sessions", and clicking **Save**.
+
+## Step 6: Connect to the Server
+1. Click **Open** to initiate the SSH session.
+
+2. When prompted for the username, enter the **new user’s username** you created earlier.
+
+3. If the key-based authentication is set up correctly, you should be logged into the server without needing a password.
+
+## Step 7: Test and Troubleshoot
+- If you encounter any issues, ensure that the `sshd_config` file on the server has `PubkeyAuthentication yes` and `AuthorizedKeysFile .ssh/authorized_keys` set.
+- Ensure the permissions on the server's `.ssh` directory and `authorized_keys` file are correct (as described in Step 3).
+- Check if the correct user is logging in by verifying that the username matches the one set up for key-based authentication.
+
+That's it! Now, the new user should be able to log into the server using key-based authentication from PuTTY.
