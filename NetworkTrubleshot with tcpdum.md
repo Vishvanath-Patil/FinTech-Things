@@ -226,6 +226,121 @@ A connection timeout occurs when the server or client doesn't receive a response
 
 By analyzing the TCP flags in combination with network infrastructure status, you can identify and resolve networking issues and security concerns effectively.
 
+# TCP Connectivity Troubleshooting: Firewall Blocking Scenario
+
+## Scenario: Traffic Allowing from Our End, but Not from the Partner's Server (Firewall Issue)
+
+### 1. Your Client Initiates the Connection:
+
+**TCPDump Output (SYN from your side):**
+```bash
+10:25:36.426924 IP 192.168.1.5.443 > 192.168.1.1.50788: Flags [S], seq 101:105, ack 305:325, win 8192, length 24
+```
+
+- **Interpretation**:  
+  - Your client (192.168.1.5) is trying to initiate a connection to the server (192.168.1.1) on port 443. This is a **SYN** packet, the first step in the TCP handshake process. The client is asking the server to open a connection.
+
+### 2. The Server Responds with SYN-ACK (Indicating Connection Acceptance):
+
+**TCPDump Output (SYN-ACK from the server):**
+
+
+- **Interpretation**:  
+  - Your client (192.168.1.5) is trying to initiate a connection to the server (192.168.1.1) on port 443. This is a **SYN** packet, the first step in the TCP handshake process. The client is asking the server to open a connection.
+
+### 2. The Server Responds with SYN-ACK (Indicating Connection Acceptance):
+
+**TCPDump Output (SYN-ACK from the server):**
+```bash
+10:25:36.527924 IP 192.168.1.1.50788 > 192.168.1.5.443: Flags [S.], seq 325:330, ack 106:130, win 8192, length 24
+```
+
+- **Interpretation**:  
+  - The server (192.168.1.1) has received your SYN packet and is responding with a **SYN-ACK**, indicating that the server is willing to establish the connection. This is the second step in the TCP handshake.
+
+### 3. The Client Should Send ACK to Complete the Handshake, But No Response from Client (Indicating Blockage):
+
+**Expected Action:**
+- Your client should respond with an **ACK** packet to complete the handshake and establish the connection.
+
+**TCPDump Output (No ACK from Client):**
+
+```bash
+10:25:37.426924 IP 192.168.1.5.443 > 192.168.1.1.50788: Flags [S], seq 106:110, ack 325:340, win 8192, length 24 10:25:38.426924 IP 192.168.1.5.443 > 192.168.1.1.50788: Flags [S], seq 111:115, ack 340:355, win 8192, length 24
+```
+
+- **Interpretation**:  
+  - Instead of sending the expected **ACK**, your client continues to send **SYN** packets, repeatedly trying to initiate the connection.
+  - **No response** is received from the server after the **SYN-ACK**.
+  - This could indicate that the server is not responding due to a firewall or some other network issue on the partner's end.
+
+---
+
+## What This Tells You:
+- The **SYN** packet from your client is reaching the server, and the server is responding with a **SYN-ACK**, indicating that the server is receiving the connection request and is willing to connect.
+- However, after this, your client is not receiving the expected **ACK** response to complete the handshake, and is instead repeatedly sending **SYN** packets.
+- This suggests a **firewall or network issue** on the server's side (partner’s firewall might be blocking the response, or not allowing the connection back to your client).
+
+## What You Can Tell the Partner:
+
+1. **Explain the Situation**:
+   - "I see that our client is successfully sending a connection request (SYN) to your server, and your server is responding with a SYN-ACK, which means it is accepting the connection. However, our client is not receiving the expected final ACK from your server, and we are repeatedly trying to initiate the connection, but we’re not getting a response."
+
+2. **Possible Cause**:
+   - "It seems like something on your side, possibly a firewall or network filter, is blocking the response or not allowing traffic back to our client."
+
+3. **Ask for Their Firewall Check**:
+   - "Could you please verify whether there are any firewall rules or security settings on your server or network that might be blocking inbound traffic to port 443 or rejecting our client's IP (192.168.1.5)? It might be a firewall issue preventing the response from reaching us."
+
+4. **Recommendation**:
+   - "Please check your firewall settings to ensure that our IP (192.168.1.5) is allowed to communicate with your server on port 443. Also, if there are any intermediate firewalls or security groups, ensure that they are not blocking the response packets."
+
+---
+
+## Alternative Scenario: Response Reaching Your Client, But ACK Is Blocked by Your Firewall
+
+1. **Your Client Initiates the Connection (SYN)**:
+   - Same as above.
+
+2. **Server Responds with SYN-ACK**:
+   - Same as above.
+
+3. **No ACK from Your Client** (Due to Firewall Blocking Response from Client):
+
+**TCPDump Output (No ACK from Your Side):**
+
+```bash
+10:25:37.426924 IP 192.168.1.5.443 > 192.168.1.1.50788: Flags [S], seq 106:110, ack 325:340, win 8192, length 24
+```
+
+- **Interpretation**:  
+  - Your client received the **SYN-ACK** from the server but is unable to send the final **ACK** to complete the handshake. This may indicate that an **outbound firewall** on your side is blocking the ACK response or traffic on port 443.
+
+---
+
+## What You Can Tell the Partner in This Case:
+
+1. **Explain the Situation**:
+   - "I can see that your server is responding with a SYN-ACK, but our client is unable to send the final ACK to complete the connection. This could be due to a local firewall or network setting blocking our outbound traffic."
+
+2. **Ask for Their Check on Client's Outbound Traffic**:
+   - "Please ensure that there are no firewall or security settings on our side that might be blocking the ACK or other traffic from our client (192.168.1.5) to your server on port 443."
+
+3. **Recommendation**:
+   - "Let's check if there are any firewall rules that might be blocking outgoing traffic from our side. Specifically, ensure that outbound connections to port 443 are allowed from our client’s IP address."
+
+---
+
+## Conclusion:
+
+- If **no response** is seen from the server after the SYN request, it’s likely a **firewall issue** on the partner’s side blocking incoming connections.
+- If **SYN-ACK is received**, but no ACK is sent from your side, it could be a **firewall issue on your side**, blocking the outgoing ACK or traffic.
+
+In either case, verifying firewall settings on both ends is crucial for identifying the root cause.
+
+
+
+
 
 
 
