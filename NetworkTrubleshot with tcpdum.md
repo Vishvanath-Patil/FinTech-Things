@@ -338,6 +338,90 @@ By analyzing the TCP flags in combination with network infrastructure status, yo
 
 In either case, verifying firewall settings on both ends is crucial for identifying the root cause.
 
+# TCP Connectivity Troubleshooting: Blocking Specific Port (Port 443 Not Allowed)
+
+## Scenario: Traffic Is Being Blocked Due to Firewall Rules Blocking the Port Used for Communication
+
+### 1. Your Client Initiates the Connection:
+
+**TCPDump Output (SYN from your side):**
+```bash
+10:25:36.426924 IP 192.168.1.5.443 > 192.168.1.1.50788: Flags [S], seq 101:105, ack 305:325, win 8192, length 24
+```
+
+- **Interpretation**:  
+  - Your client (192.168.1.5) is attempting to establish a connection to the server (192.168.1.1) on port 443, which is typically used for HTTPS communication. This is a **SYN** packet, which indicates the start of the TCP handshake process.
+
+### 2. No Response from the Server (Firewall Could Be Blocking the Port):
+
+**Expected Action:**
+- The server should respond with a **SYN-ACK** if it’s listening on the port, accepting the connection.
+
+**TCPDump Output (No SYN-ACK from server):**
+```bash
+10:25:37.426924 IP 192.168.1.5.443 > 192.168.1.1.50788: Flags [S], seq 106:110, ack 325:340, win 8192, length 24 10:25:38.426924 IP 192.168.1.5.443 > 192.168.1.1.50788: Flags [S], seq 111:115, ack 340:355, win 8192, length 24
+```
+
+- **Interpretation**:  
+  - The client (192.168.1.5) is repeatedly sending **SYN** packets to the server, but there is **no SYN-ACK response** from the server.
+  - This suggests that either the server is not listening on the port or that the server’s firewall (or an intermediate network device like a router) is blocking traffic on that specific port (443).
+
+### 3. Possible Cause: Partner’s Firewall Blocking Port 443
+
+- **What Could Be Happening**:  
+  - The server is likely running a firewall that is blocking incoming traffic on port 443 (HTTPS).
+  - This could happen if the partner’s firewall has rules configured to restrict traffic on certain ports or block external traffic on port 443, preventing the server from responding to the connection request.
+
+---
+
+## What You Can Tell the Partner:
+
+1. **Explain the Situation**:
+   - "I see that our client is sending a SYN packet to your server on port 443, but we are not receiving any response from your server. This indicates that we are unable to establish the connection."
+   
+2. **Possible Cause**:
+   - "It appears that your firewall or network configuration might be blocking inbound traffic on port 443, which is preventing us from establishing an HTTPS connection."
+
+3. **Ask for Their Firewall Check**:
+   - "Could you please check your firewall settings to ensure that inbound traffic on port 443 is allowed? If there are any rules blocking incoming requests on this port, this could be causing the issue."
+
+4. **Recommendation**:
+   - "Please verify if port 443 is open for incoming traffic from external sources. It may be necessary to modify your firewall rules to allow inbound connections on port 443 to facilitate the communication."
+
+---
+
+## Troubleshooting Steps for Both Parties:
+
+### For the Partner (Server Side):
+
+1. **Check the Firewall Rules**:
+   - Ensure that the server’s firewall is allowing inbound traffic on port 443.
+   - Verify there are no blocking rules that might prevent the server from responding to the client's SYN-ACK.
+   
+2. **Check Server Listening on Port 443**:
+   - Run a command like `netstat -tuln` to verify that the server is listening on port 443.
+   
+3. **Check for Any Network Device Blocking the Port**:
+   - If there is an external firewall, router, or proxy between the client and server, check if it is blocking or restricting traffic on port 443.
+
+### For Your Side (Client Side):
+
+1. **Verify Outbound Firewall**:
+   - Ensure that your outbound traffic is not being blocked on port 443.
+   - Check if any local firewalls or network security devices are preventing connections to external servers on this port.
+
+2. **Check Routing**:
+   - Ensure that there is no misconfiguration in routing tables or network issues that might prevent reaching the partner's server.
+
+---
+
+## Conclusion:
+
+- If **no response** (SYN-ACK) is seen after sending a SYN packet, it's likely that the server’s **firewall** is blocking traffic on port 443, preventing the connection from being established.
+- **Firewall** issues blocking the specific port can prevent successful connections, so verifying **firewall rules** and ensuring **port 443 is allowed** is essential for both troubleshooting and resolving the connectivity issue.
+
+
+
 
 
 
