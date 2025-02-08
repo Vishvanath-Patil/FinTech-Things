@@ -11,35 +11,32 @@ The general syntax for running TCPDump is:
 tcpdump [options] [expression]
 [options]: Flags that modify the behavior of TCPDump.
 [expression]: A filter to capture specific traffic (e.g., IP address, port, protocol).
+
 3. Common TCPDump Commands
 Basic Capture
 To capture all packets on the default network interface:
-
 sudo tcpdump
 This command will capture packets on the first network interface and display them in the terminal.
 
 Specifying Interface
 To capture traffic on a specific interface (e.g., eth0):
-
 sudo tcpdump -i eth0
 The -i option specifies the network interface to listen on.
 
 Capturing Only N Packets
 To capture the first 10 packets:
-
 sudo tcpdump -c 10
 The -c option limits the number of packets captured.
 
 Saving Output to a File
 To capture packets and save them to a file for later analysis:
-
 sudo tcpdump -w capture_file.pcap
 This saves the packets in .pcap format, which can be opened with tools like Wireshark.
 
 Reading from a Saved File
 To read and analyze saved packet capture files:
-
 sudo tcpdump -r capture_file.pcap
+
 4. Filtering Traffic
 Filters allow you to capture only specific traffic. Filters can be based on protocols, IP addresses, ports, etc.
 
