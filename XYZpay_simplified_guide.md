@@ -1,4 +1,4 @@
-# TerraPay - Send/Receive Partners & Callbacks (Simplified Guide)
+# XYZPay - Send/Receive Partners & Callbacks (Simplified Guide)
 
 ## The Players
 - **Sender** → The person sending the money.
@@ -16,10 +16,10 @@
 1. **Sender → Send Partner**  
    Alice goes to her UK remittance app (Send Partner) and pays them £100.
 
-2. **Send Partner → TerraPay**  
+2. **Send Partner → XYZPay**  
    The Send Partner sends the transaction details (Alice, amount, recipient bank account) to TerraPay’s API.
 
-3. **TerraPay → Receive Partner**  
+3. **XYZPay → Receive Partner**  
    TerraPay checks everything (KYC, fraud checks, FX rate) and sends payout instructions to the Receive Partner in India.
 
 4. **Receive Partner → Recipient**  
@@ -40,7 +40,7 @@
 
 ---
 
-## How TerraPay Makes Money
+## How XYZPay Makes Money
 1. **Fee per transaction** (e.g., ₹30 charged to Send Partner or sender).
 2. **FX margin** — They give a slightly lower exchange rate than market and keep the difference.
 3. **Incentives from partners** for sending volume.
