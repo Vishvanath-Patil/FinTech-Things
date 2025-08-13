@@ -23,10 +23,6 @@ EIG servers are backend systems handling partner interactions, such as:
 ## 3️⃣ VPN Server
 **Purpose:** Handles VPN tunnels, enabling secure communication between the organization's servers and external partners.
 
-**Directory Setup:**
-```
-/etc/ipsec.d/
-```
 Contains IPsec-related configurations and secrets.
 
 **Technology:**  
@@ -39,11 +35,6 @@ Ensures secure transmission of sensitive financial data between:
 ---
 
 ## 4️⃣ All Tunnels Directory Setup
-**Purpose:**
-```
-/root/vpnsetup/setupiptables.sh
-```
-Script for configuring `iptables` firewall rules related to VPN tunnels.
 
 **FinTech Context:**  
 - Automates firewall rule setup  
