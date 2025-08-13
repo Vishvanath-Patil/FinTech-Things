@@ -4,8 +4,8 @@
 
 - **Amit** → Lives in India, wants to send money to his sister.  
 - **Priya** → Lives in Kenya, will receive the money.  
-- **PayFast** → Amit’s local money transfer service in India (**TerraPay’s Send Partner**).  
-- **MobiCash** → Priya’s mobile wallet provider in Kenya (**TerraPay’s Receive Partner**).  
+- **PayFast** → Amit’s local money transfer service in India (**Fintech’s Send Partner**).  
+- **MobiCash** → Priya’s mobile wallet provider in Kenya (**Fintech’s Receive Partner**).  
 - **Fintech** → The bridge/platform connecting PayFast and MobiCash.
 
 ---
@@ -81,7 +81,7 @@ Amit (India) --PayFast--> Fintech --> MobiCash --> Priya (Kenya)
 
 ## 5️⃣ Why Network Connectivity Matters for Cloud Engineers
 As a Cloud/Network Engineer, you ensure:
-- **Partner IPs are whitelisted** → So PayFast & MobiCash can communicate with TerraPay.  
+- **Partner IPs are whitelisted** → So PayFast & MobiCash can communicate with Fintech.  
 - **SSL certificates are valid** → Secure API calls.  
 - **Firewall/VPN tunnels are up** → For dedicated partner connections.  
 - **Monitoring** → Check if API calls are failing due to network issues.  
