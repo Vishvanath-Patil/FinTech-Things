@@ -1,13 +1,7 @@
-# 📌 Understanding the Architecture – TerraPay FinTech Setup
+# 📌 Understanding the Architecture – FinTech Setup
 
 ## 1️⃣ EIG Server
 **Purpose:** Hosts APIs and services that partners connect to for exchanging financial data or initiating transactions.
-
-**Directory Setup:**
-```
-/prd/EIG_OUT/SSL/client_ssls
-```
-A secure directory for storing SSL certificates, likely used for encrypting communication with partners.
 
 **FinTech Context:**  
 EIG servers are backend systems handling partner interactions, such as:
@@ -19,12 +13,6 @@ EIG servers are backend systems handling partner interactions, such as:
 
 ## 2️⃣ Jump Server
 **Purpose:** Acts as a secured gateway for accessing other servers in the architecture.
-
-**Directory Setup:**
-```
-/prd/utils/setupiptables.sh
-```
-A script for managing `iptables` firewall rules.
 
 **FinTech Context:**  
 - Isolates access to critical servers (EIG, VPN, TXN, RPT)  
@@ -111,19 +99,19 @@ Partners interact via APIs for:
 
 ## 9️⃣ How Send Partner & Receive Partner Connect and Work
 
-### **Send Partner → TerraPay**
+### **Send Partner → FinTech**
 - A **Send Partner** (e.g., PayFast in India) initiates a money transfer request through their app or API.  
-- The request is sent **via secure VPN + whitelisted IP** to TerraPay’s **EIG Server**.  
-- TerraPay verifies:
+- The request is sent **via secure VPN + whitelisted IP** to FinTech’s **EIG Server**.  
+- FinTech verifies:
   - API credentials
   - SSL certificates
   - Transaction details (KYC, compliance)
-- TerraPay converts currency if needed and forwards the transaction to the Receive Partner.
+- FinTech converts currency if needed and forwards the transaction to the Receive Partner.
 
 ---
 
-### **TerraPay → Receive Partner**
-- TerraPay sends an **API call** to the Receive Partner’s system (e.g., MobiCash in Kenya) via:
+### **FinTech → Receive Partner**
+- FinTech sends an **API call** to the Receive Partner’s system (e.g., MobiCash in Kenya) via:
   - Secure VPN tunnel (if applicable)
   - SSL encryption
   - Partner whitelisted IPs
@@ -135,8 +123,8 @@ Partners interact via APIs for:
 ---
 
 ### **Callbacks Flow**
-- **Receiver Callback:** From Receive Partner → TerraPay with status (SUCCESS/FAILURE)  
-- **Sender Callback:** From TerraPay → Send Partner to update sender about transaction status  
+- **Receiver Callback:** From Receive Partner → FinTech with status (SUCCESS/FAILURE)  
+- **Sender Callback:** From FinTech → Send Partner to update sender about transaction status  
 
 ---
 
@@ -151,7 +139,7 @@ Sender (India) --[Send Partner: PayFast]--> VPN --> EIG Server --> TXN Server
                                              Beneficiary Wallet Credited
 ```
 ```
-Receiver Callback (MobiCash → TerraPay) → Sender Callback (TerraPay → PayFast)
+Receiver Callback (MobiCash → FinTech) → Sender Callback (FinTech → PayFast)
 ```
 ---
 
